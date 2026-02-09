@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
+import API_URL from '../config/api';
 
 // Page Imports
 import Login from './pages/login'; 
@@ -116,11 +117,12 @@ const Home = ({ lang, userRole }) => {
 
   const handleSubscription = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/subscription/set-daily', {
+      // Corrected Fetch: Pointing to subscription route, not login
+      const response = await fetch(`${API_URL}/api/subscription/set-daily`, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` // Added Auth Token
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
         },
         body: JSON.stringify({
           userId: localStorage.getItem('userId'),
@@ -215,6 +217,11 @@ export default function App() {
   const [userRole, setUserRole] = useState(() => {
     return localStorage.getItem('userRole') || null;
   });
+
+  // Warm-up effect to prevent Render free-tier sleep
+  useEffect(() => {
+    fetch(API_URL).catch(() => console.log("Waking up server..."));
+  }, []);
 
   const toggleLang = () => setLang(prev => prev === 'en' ? 'hi' : 'en');
 

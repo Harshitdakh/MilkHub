@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import API_URL from '../config/api';
 
 const Register = ({ lang, handleLoginSuccess }) => {
   const navigate = useNavigate();
@@ -55,7 +56,8 @@ const Register = ({ lang, handleLoginSuccess }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+     // FIXED: Changed endpoint to /register and fixed template literal syntax
+     const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -63,9 +65,9 @@ const Register = ({ lang, handleLoginSuccess }) => {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok && data.token) {
         // Automatically log the user in after registration
-        handleLoginSuccess(data.role, data.token, data._id);
+        handleLoginSuccess(data.role, data.token, data.userId || data._id);
         
         // Redirect to their specific dashboard
         if (data.role === 'seller') {

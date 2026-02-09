@@ -13,7 +13,10 @@ connectDB();
 const app = express();
 
 // 3. Middleware
-app.use(cors()); // ALLOWS REACT TO CONNECT (Critical for your demo)
+app.use(cors({
+  origin: ["https://milkhub-rho.vercel.app", "http://localhost:5173"], // Add your Vercel URL here
+  credentials: true
+})); // ALLOWS REACT TO CONNECT (Critical for your demo)
 app.use(express.json()); // Essential to read req.body data
 
 // 4. API Routes

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import AnalyticsChart from '../components/AnalyticsChart';
+import API_URL from '../config/api';
 
 // 1. Elaborated Inventory Summary Component
 const InventorySummary = ({ lang, t }) => {
-  // We use the 't' passed from the parent to keep units and labels in sync
   const data = [
     { item: t.milk, total: `142.5 ${t.unit}`, icon: "🥛", border: "border-sky-500" },
     { item: t.paneer, total: `12.0 ${t.kg}`, icon: "🧀", border: "border-orange-500" },
@@ -23,7 +23,6 @@ const InventorySummary = ({ lang, t }) => {
           <p className="text-3xl font-black text-slate-900 italic relative z-10">
             {i.total}
           </p>
-          {/* Decorative Icon */}
           <div className="absolute top-2 right-4 opacity-5 text-6xl group-hover:scale-110 group-hover:opacity-10 transition-all">
             {i.icon}
           </div>
@@ -38,7 +37,6 @@ const SellerDashboard = ({ lang }) => {
   const [buyers, setBuyers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Comprehensive Translation Dictionary
   const t = {
     en: {
       title: "Delivery",
@@ -91,7 +89,8 @@ const SellerDashboard = ({ lang }) => {
   ];
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/users/buyers')
+    // FIXED: Using dynamic API_URL for live environment
+    fetch(`${API_URL}/api/users/buyers`)
       .then(res => res.json())
       .then(data => {
         setBuyers(data);
@@ -106,8 +105,6 @@ const SellerDashboard = ({ lang }) => {
   return (
     <div className="min-h-screen bg-gray-50/50 p-6 lg:p-12 text-left">
       <div className="max-w-7xl mx-auto">
-        
-        {/* Header Section */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
             <h1 className="text-5xl font-black text-slate-900 tracking-tight mb-2">
@@ -123,10 +120,8 @@ const SellerDashboard = ({ lang }) => {
           </div>
         </header>
 
-        {/* 1. Inventory Summary Section */}
         <InventorySummary lang={lang} t={t} />
 
-        {/* 2. Analytics & Stats Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-50">
             <p className="text-slate-900 font-black mb-6 uppercase text-xs tracking-widest opacity-50">
@@ -148,7 +143,6 @@ const SellerDashboard = ({ lang }) => {
           </div>
         </div>
 
-        {/* 3. Delivery Table Section */}
         <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
           <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-white">
             <h3 className="text-2xl font-black text-slate-900">{t.tableTitle}</h3>

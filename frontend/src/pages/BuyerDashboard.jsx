@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import API_URL from '../config/api';
 
 const BuyerDashboard = ({ lang }) => {
   const [userData, setUserData] = useState(null);
@@ -33,14 +34,14 @@ const BuyerDashboard = ({ lang }) => {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
-        // Fetch Subscription (Plan details)
-        const subRes = await fetch(`http://localhost:5000/api/subscription/my-subscription`, {
+        // FIXED: Replaced localhost with ${API_URL}
+        const subRes = await fetch(`${API_URL}/api/subscription/my-subscription`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const subData = await subRes.json();
 
-        // Fetch Delivery History (For charts and list)
-        const historyRes = await fetch(`http://localhost:5000/api/delivery/buyer/${userId}`, {
+        // FIXED: Replaced localhost with ${API_URL}
+        const historyRes = await fetch(`${API_URL}/api/delivery/buyer/${userId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const historyData = await historyRes.json();
@@ -71,8 +72,6 @@ const BuyerDashboard = ({ lang }) => {
     </div>
   );
 
-  // Map backend history to Recharts format
-  // We take the last 7 entries or provide dummy if empty
   const chartData = userData.history.length > 0 
     ? userData.history.slice(-7).map(item => ({
         day: new Date(item.date).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-US', { day: '2-digit', month: 'short' }),
@@ -100,19 +99,16 @@ const BuyerDashboard = ({ lang }) => {
 
         {/* Top Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          
-          {/* Real Bill Calculation */}
           <div className="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center">
             <div className="relative z-10">
               <p className="text-sky-400 font-black uppercase text-xs tracking-widest mb-2">{t.billTitle}</p>
-              <h2 className="text-6xl font-black mb-4">₹{userData.totalDailyCost * 30}</h2>
+              <h2 className="text-6xl font-black mb-4">₹{userData.totalDailyCost ? userData.totalDailyCost * 30 : 0}</h2>
               <p className="font-bold opacity-70 text-sm">{t.dueDate}</p>
               <button className="mt-6 bg-white/10 hover:bg-white/20 px-6 py-2 rounded-xl text-xs font-bold border border-white/20 transition-all">{t.btnEdit}</button>
             </div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500 rounded-full blur-[100px] opacity-20 -mr-20 -mt-20"></div>
           </div>
 
-          {/* Real Chart Data */}
           <div className="lg:col-span-2 bg-white p-8 rounded-[3rem] shadow-xl border border-slate-50">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-slate-900">{t.chartTitle}</h3>
@@ -140,8 +136,6 @@ const BuyerDashboard = ({ lang }) => {
 
         {/* Bottom Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          {/* Today's Status */}
           <div className="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-50 flex flex-col justify-between group">
             <div>
               <p className="text-slate-400 font-black uppercase text-xs tracking-widest mb-4">{t.todayTitle}</p>
@@ -149,7 +143,7 @@ const BuyerDashboard = ({ lang }) => {
                 <div className="text-6xl group-hover:scale-110 transition-transform duration-500">🥛</div>
                 <div>
                   <h4 className="text-4xl font-black text-slate-900">{userData.quantity} {userData.unit || 'L'}</h4>
-                  <p className="text-sky-500 font-bold">{userData.milkType}</p>
+                  <p className="text-sky-500 font-bold">{userData.milkType || userData.product}</p>
                 </div>
               </div>
             </div>
@@ -161,7 +155,6 @@ const BuyerDashboard = ({ lang }) => {
             </div>
           </div>
 
-          {/* History List */}
           <div className="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-50">
             <h3 className="text-xl font-black text-slate-900 mb-6">{t.historyTitle}</h3>
             <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
@@ -180,10 +173,9 @@ const BuyerDashboard = ({ lang }) => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
 };
 
-export default BuyerDashboard;
+export default BuyerDashboard;  
