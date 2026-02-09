@@ -42,7 +42,7 @@ const Login = ({ lang, handleLoginSuccess }) => {
 
     try {
       // Connect to your Node.js Backend
-      const response = await fetch($,{API_URL}/api/auth/login, {
+      const response = await fetch($,{API_URL}/api/auth/Login, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

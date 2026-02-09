@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
-import API_URL from '../config/api';
+import API_URL from './config/api';
 
 // Page Imports
 import Login from './pages/login'; 
