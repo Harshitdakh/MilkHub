@@ -6,7 +6,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import SellerDashboard from './pages/SellerDashboard';
 import BuyerDashboard from './pages/BuyerDashboard';
-import Products from './pages/Products';
+import products from "./pages/products";
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Reviews from './pages/Reviews';
