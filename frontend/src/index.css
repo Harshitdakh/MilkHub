@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Adding a smooth background for that modern feel */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar for a polished look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+/* ::-webkit-scrollbar-thumb { */
