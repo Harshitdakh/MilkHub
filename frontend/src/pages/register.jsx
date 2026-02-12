@@ -10,7 +10,9 @@ const Register = ({ lang, handleLoginSuccess }) => {
     name: '',
     email: '',
     password: '',
-    role: 'buyer' 
+    phone: '',
+    location: '',
+    role: 'buyer'
   });
 
   const t = {
@@ -19,6 +21,8 @@ const Register = ({ lang, handleLoginSuccess }) => {
       sub: "Fresh milk from Mandsaur farms to your doorstep.",
       name: "Full Name",
       email: "Email Address",
+      phone: "Phone Number",
+      location: "Location / Address",
       pass: "Password",
       role: "I want to...",
       buy: "Buy Milk (Customer)",
@@ -34,6 +38,8 @@ const Register = ({ lang, handleLoginSuccess }) => {
       sub: "मंदसौर के खेतों से ताज़ा दूध आपके द्वार तक।",
       name: "पूरा नाम",
       email: "ईमेल पता",
+      phone: "फ़ोन नंबर",
+      location: "स्थान / पता",
       pass: "पासवर्ड",
       role: "मैं चाहता हूँ...",
       buy: "दूध खरीदना (ग्राहक)",
@@ -56,8 +62,8 @@ const Register = ({ lang, handleLoginSuccess }) => {
     setError('');
 
     try {
-     // FIXED: Changed endpoint to /register and fixed template literal syntax
-     const response = await fetch(`${API_URL}/api/auth/register`, {
+      // FIXED: Changed endpoint to /register and fixed template literal syntax
+      const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -68,7 +74,7 @@ const Register = ({ lang, handleLoginSuccess }) => {
       if (response.ok && data.token) {
         // Automatically log the user in after registration
         handleLoginSuccess(data.role, data.token, data.userId || data._id);
-        
+
         // Redirect to their specific dashboard
         if (data.role === 'seller') {
           navigate('/dashboard');
@@ -88,7 +94,7 @@ const Register = ({ lang, handleLoginSuccess }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FDFDFD] px-6 py-12 text-left">
       <div className="max-w-md w-full bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-50">
-        
+
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-block p-4 bg-sky-50 rounded-2xl mb-4 text-3xl">🥛</div>
@@ -132,6 +138,34 @@ const Register = ({ lang, handleLoginSuccess }) => {
             />
           </div>
 
+          {/* Phone Field */}
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">{t.phone}</label>
+            <input
+              type="tel"
+              name="phone"
+              required
+              value={form.phone}
+              onChange={handleChange}
+              className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-sky-500 outline-none transition-all font-bold"
+              placeholder="+91 XXXXX XXXXX"
+            />
+          </div>
+
+          {/* Location Field */}
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">{t.location}</label>
+            <input
+              type="text"
+              name="location"
+              required
+              value={form.location}
+              onChange={handleChange}
+              className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-sky-500 outline-none transition-all font-bold"
+              placeholder="Mandsaur, MP..."
+            />
+          </div>
+
           {/* Password Field */}
           <div>
             <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">{t.pass}</label>
@@ -164,12 +198,11 @@ const Register = ({ lang, handleLoginSuccess }) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-5 rounded-2xl font-black text-white text-lg shadow-xl transition-all flex justify-center items-center ${
-                loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-sky-600 hover:-translate-y-1'
-            }`}
+            className={`w-full py-5 rounded-2xl font-black text-white text-lg shadow-xl transition-all flex justify-center items-center ${loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-sky-600 hover:-translate-y-1'
+              }`}
           >
             {loading ? (
-                <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
             ) : t.btn}
           </button>
         </form>

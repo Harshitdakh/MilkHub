@@ -19,7 +19,7 @@ const generateToken = (id) => {
  */
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, phone, location, role } = req.body;
 
     // 1. Validation: Check if user already exists
     const userExists = await User.findOne({ email });
@@ -39,6 +39,8 @@ exports.registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      phone,
+      location,
       role: role || 'buyer' // Defaults to buyer (Mandsaur customers)
     });
 

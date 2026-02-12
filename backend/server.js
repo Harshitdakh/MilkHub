@@ -13,14 +13,29 @@ connectDB();
 const app = express();
 
 // 3. Middleware
+// CORS: Dynamically allow the frontend URL from env + localhost for dev
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5173",
+    "https://milkhub-rho.vercel.app"
+].filter(Boolean);
+
 app.use(cors({
-  origin: ["https://milkhub-rho.vercel.app", "http://localhost:5173", /\.vercel\.app$/],
-  credentials: true
-}));// ALLOWS REACT TO CONNECT (Critical for your demo)
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc.)
+        if (!origin) return callback(null, true);
+        // Allow any *.vercel.app subdomain
+        if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true
+}));
 app.use(express.json()); // Essential to read req.body data
 
 // 4. API Routes
-// We mount each route file to a specific path
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/delivery', require('./routes/deliveryRoutes'));
 app.use('/api/subscription', require('./routes/subscriptionRoutes'));
@@ -28,14 +43,11 @@ app.use('/api/bills', require('./routes/billRoutes'));
 
 /**
  * 5. Integrated Route: Fetch Buyers for Mahavir's Dashboard
- * We keep this here or move to a separate userRoute. 
- * This fulfills the SellerDashboard table requirement.
  */
 app.get('/api/users/buyers', async (req, res) => {
     try {
         console.log("Fetching buyers for Mahavir Dhud...");
-        // Filters only users with the 'buyer' role
-        const buyers = await User.find({ role: 'buyer' }).select('-password'); 
+        const buyers = await User.find({ role: 'buyer' }).select('-password');
         console.log(`Found ${buyers.length} buyers in Mandsaur.`);
         res.status(200).json(buyers);
     } catch (error) {
@@ -48,7 +60,7 @@ app.get('/', (req, res) => {
     res.send('MilkHub API is running smoothly...');
 });
 
-// 7. Error Handling Middleware (For a professional finish)
+// 7. Error Handling Middleware
 app.use((err, req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     res.status(statusCode).json({
@@ -57,12 +69,17 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 8. Start the Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`
-    🚀 Server running on port ${PORT}
-    📍 Environment: ${process.env.NODE_ENV || 'development'}
-    🥛 MilkHub API Ready
-    `);
-});
+// 8. Start the Server (only when NOT on Vercel)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`
+        🚀 Server running on port ${PORT}
+        📍 Environment: ${process.env.NODE_ENV || 'development'}
+        🥛 MilkHub API Ready
+        `);
+    });
+}
+
+// 9. Export app for Vercel serverless
+module.exports = app;
