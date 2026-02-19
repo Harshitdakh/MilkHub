@@ -11,6 +11,8 @@ import Products from "./pages/Products";
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Reviews from './pages/Reviews';
+import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // 1. Smart Navigation Component
 const Navbar = ({ lang, toggleLang, userRole, handleLogout }) => {
@@ -247,8 +249,17 @@ export default function App() {
           <Route path="/" element={<Home lang={lang} userRole={userRole} />} />
           <Route path="/login" element={<Login lang={lang} handleLoginSuccess={handleLoginSuccess} />} />
           <Route path="/register" element={<Register lang={lang} handleLoginSuccess={handleLoginSuccess} />} />
-          <Route path="/dashboard" element={<SellerDashboard lang={lang} />} />
-          <Route path="/my-orders" element={<BuyerDashboard lang={lang} />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute requiredRole="seller">
+              <SellerDashboard lang={lang} />
+            </ProtectedRoute>
+          } />
+          <Route path="/my-orders" element={
+            <ProtectedRoute requiredRole="buyer">
+              <BuyerDashboard lang={lang} />
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={<NotFound lang={lang} />} />
         </Routes>
       </main>
       <footer className="py-20 bg-slate-50 border-t border-slate-100 text-center text-slate-400">

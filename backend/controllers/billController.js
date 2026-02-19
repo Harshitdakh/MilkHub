@@ -24,11 +24,11 @@ exports.generateBill = async (req, res) => {
     // 3. Save or Update the bill
     const bill = await Bill.findOneAndUpdate(
       { buyerId, month, year },
-      { 
-        sellerId: req.user._id, 
-        totalLiters, 
-        totalAmount, 
-        status: 'unpaid' 
+      {
+        sellerId: req.user._id,
+        totalLiters,
+        totalAmount,
+        status: 'unpaid'
       },
       { upsert: true, new: true }
     );
@@ -36,5 +36,25 @@ exports.generateBill = async (req, res) => {
     res.status(201).json({ success: true, data: bill });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * @desc    Get all bills for a buyer
+ * @route   GET /api/bills/buyer/:buyerId
+ * @access  Private
+ */
+exports.getBuyerBills = async (req, res) => {
+  try {
+    const bills = await Bill.find({ buyerId: req.params.buyerId })
+      .sort({ year: -1, month: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: bills.length,
+      data: bills
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

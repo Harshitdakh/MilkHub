@@ -1,8 +1,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const helmet = require('helmet');
 const connectDB = require('./config/db');
 const User = require('./models/User');
+const mongoose = require('mongoose');
 
 // 1. Load Environment Variables
 dotenv.config();
@@ -25,10 +27,10 @@ app.use(cors({
     origin: function (origin, callback) {
         // Allow requests with no origin (like mobile apps or Postman)
         if (!origin) return callback(null, true);
-        
+
         // Match any Vercel deployment URL
         if (/\.vercel\.app$/.test(origin)) return callback(null, true);
-        
+
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         } else {
@@ -39,7 +41,8 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.json()); 
+app.use(express.json({ limit: '1mb' }));
+app.use(helmet());
 
 // 4. API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -62,6 +65,18 @@ app.get('/api/users/buyers', async (req, res) => {
 // 6. Root/Test Route
 app.get('/', (req, res) => {
     res.send('MilkHub API is running smoothly...');
+});
+
+// 7. Health Check Endpoint
+app.get('/api/health', (req, res) => {
+    const dbState = mongoose.connection.readyState;
+    const dbStatus = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+    res.status(dbState === 1 ? 200 : 503).json({
+        status: dbState === 1 ? 'ok' : 'degraded',
+        db: dbStatus[dbState] || 'unknown',
+        uptime: Math.floor(process.uptime()) + 's',
+        timestamp: new Date().toISOString()
+    });
 });
 
 // 7. Error Handling Middleware

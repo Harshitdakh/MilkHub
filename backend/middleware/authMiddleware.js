@@ -16,16 +16,17 @@ const protect = async (req, res, next) => {
       // Get user from the token (excludes password)
       req.user = await User.findById(decoded.id).select('-password');
 
-      next(); // Move to the next middleware or controller
+      if (!req.user) {
+        return res.status(401).json({ message: 'Not authorized, user not found' });
+      }
+
+      return next(); // Move to the next middleware or controller
     } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
-      return;
+      return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   }
 
-  if (!token) {
-    return res.status(401).json({ message: 'Not authorized, no token' });
-  }
+  return res.status(401).json({ message: 'Not authorized, no token' });
 };
 
 // 2. Role Authorization (Checks if Seller)

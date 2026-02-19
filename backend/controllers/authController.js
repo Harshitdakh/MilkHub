@@ -21,6 +21,31 @@ exports.registerUser = async (req, res) => {
   try {
     const { name, email, password, phone, location, role } = req.body;
 
+    // Input validation
+    if (!name || !email || !password || !phone || !location) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required: name, email, password, phone, location'
+      });
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address'
+      });
+    }
+
+    // Password length check
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters'
+      });
+    }
+
     // 1. Validation: Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -68,6 +93,14 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // Input validation
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required'
+      });
+    }
 
     // 1. Find user by email
     const user = await User.findOne({ email });
