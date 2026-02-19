@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
  * @access  Private Helper
  */
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { 
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d' // Token remains valid for 30 days
   });
 };
@@ -24,9 +24,9 @@ exports.registerUser = async (req, res) => {
     // 1. Validation: Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'User already exists with this email.' 
+      return res.status(400).json({
+        success: false,
+        message: 'User already exists with this email.'
       });
     }
 
@@ -72,8 +72,16 @@ exports.loginUser = async (req, res) => {
     // 1. Find user by email
     const user = await User.findOne({ email });
 
-    // 2. Check if user exists and password matches
-    if (user && (await bcrypt.compare(password, user.password))) {
+    // 2. Check if user exists first, then compare password
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
       res.json({
         success: true,
         _id: user._id,
@@ -83,10 +91,9 @@ exports.loginUser = async (req, res) => {
         token: generateToken(user._id),
       });
     } else {
-      // Generic error for security (don't reveal if it was the email or password)
-      res.status(401).json({ 
-        success: false, 
-        message: 'Invalid email or password' 
+      res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
       });
     }
   } catch (error) {

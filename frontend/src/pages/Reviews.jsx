@@ -2,7 +2,7 @@ import React from 'react';
 
 // Catching the 'lang' prop to enable English/Hindi switching
 const Reviews = ({ lang }) => {
-  
+
   const content = {
     en: {
       title: "What Our",
@@ -32,21 +32,21 @@ const Reviews = ({ lang }) => {
         <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-16">
           {t.title} <span className="text-sky-500">{t.highlight}</span>
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {t.reviews.map((rev, i) => (
             <div key={i} className="bg-white p-10 rounded-[3rem] shadow-xl shadow-slate-200/50 border border-slate-50 text-left relative overflow-hidden transition-all hover:shadow-2xl hover:shadow-sky-100">
               {/* Decorative Quote Mark */}
               <div className="text-sky-400 text-6xl absolute -top-2 -left-2 opacity-10 font-serif">“</div>
-              
+
               <div className="flex text-yellow-400 mb-6">
                 {[...Array(rev.stars)].map((_, i) => <span key={i}>★</span>)}
               </div>
-              
-              <p className="text-slate-600 font-medium italic mb-8 relative z-10 leading-relaxed">
-                "{rev.text}"
+
+              <p className="text-gray-600 mb-4 flex-grow italic">
+                &ldquo;{rev.text}&rdquo;
               </p>
-              
+
               <div className="border-t border-slate-50 pt-6">
                 <p className="font-black text-slate-900 text-lg">{rev.name}</p>
                 <p className="text-xs font-bold text-sky-500 uppercase tracking-widest mt-1">

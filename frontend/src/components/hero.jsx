@@ -26,7 +26,7 @@ const Hero = () => {
           </h1>
 
           <p className="text-xl text-slate-600 max-w-xl leading-relaxed">
-            The modern way for Dairy Sellers and Buyers to manage daily deliveries, 
+            The modern way for Dairy Sellers and Buyers to manage daily deliveries,
             automated billing, and transparent records in English & हिन्दी.
           </p>
 
@@ -60,7 +60,7 @@ const Hero = () => {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Today's Goal</p>
+                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Today&apos;s Goal</p>
                 <p className="text-2xl font-black text-slate-900">2.5 Liters</p>
               </div>
             </div>
