@@ -1,7 +1,10 @@
 // src/api/auth.js
 
+// This checks if we are on Vercel (Production) or Localhost (Development)
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export async function registerUser({ name, phone, email, password }) {
-  const response = await fetch("http://localhost:5000/api/auth/register", {
+  const response = await fetch(`${API_URL}/api/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,7 +17,7 @@ export async function registerUser({ name, phone, email, password }) {
 }
 
 export async function loginUser({ email, password }) {
-  const response = await fetch("http://localhost:5000/api/auth/login", {
+  const response = await fetch(`${API_URL}/api/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

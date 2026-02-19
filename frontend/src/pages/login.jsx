@@ -42,7 +42,7 @@ const Login = ({ lang, handleLoginSuccess }) => {
 
     try {
       // Connect to your Node.js Backend
-      const response = await fetch($,{API_URL}/api/auth/Login, {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -74,7 +74,7 @@ const Login = ({ lang, handleLoginSuccess }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-6 text-left">
       <div className="max-w-md w-full bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-100">
-        
+
         {/* Header Section */}
         <header className="text-center mb-8">
           <div className="inline-block p-4 bg-sky-50 rounded-2xl mb-4 text-3xl">🔑</div>
@@ -95,8 +95,8 @@ const Login = ({ lang, handleLoginSuccess }) => {
             <label className="block text-sm font-black text-slate-900 mb-2 ml-1">
               {t.emailLabel}
             </label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               required
               className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent focus:border-sky-500 rounded-2xl font-bold outline-none transition-all placeholder:text-slate-300"
               placeholder="rahul@example.com"
@@ -109,8 +109,8 @@ const Login = ({ lang, handleLoginSuccess }) => {
             <label className="block text-sm font-black text-slate-900 mb-2 ml-1">
               {t.passLabel}
             </label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               required
               className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent focus:border-sky-500 rounded-2xl font-bold outline-none transition-all placeholder:text-slate-300"
               placeholder="••••••••"
@@ -119,15 +119,14 @@ const Login = ({ lang, handleLoginSuccess }) => {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
-            className={`w-full py-5 rounded-2xl font-black text-white text-lg shadow-xl transition-all flex justify-center items-center ${
-              loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600 hover:-translate-y-1'
-            }`}
+            className={`w-full py-5 rounded-2xl font-black text-white text-lg shadow-xl transition-all flex justify-center items-center ${loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600 hover:-translate-y-1'
+              }`}
           >
             {loading ? (
-               <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
             ) : t.btn}
           </button>
         </form>
@@ -135,7 +134,7 @@ const Login = ({ lang, handleLoginSuccess }) => {
         {/* Footer Link */}
         <footer className="mt-10 text-center">
           <p className="text-slate-400 font-bold text-sm">
-            {t.noAcc} 
+            {t.noAcc}
             <Link to="/register" className="text-sky-500 hover:underline ml-1">
               {t.join}
             </Link>

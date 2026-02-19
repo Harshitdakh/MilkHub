@@ -21,7 +21,7 @@ exports.setSubscription = async (req, res) => {
         if (sub) {
             // Update the existing subscription
             sub.category = category || 'milk';
-            sub.milkType = product; 
+            sub.milkType = product;
             sub.pricePerLiter = price;
             sub.quantity = qty;
             sub.unit = unit;
@@ -73,10 +73,11 @@ exports.setSubscription = async (req, res) => {
 exports.getMySubscription = async (req, res) => {
     try {
         const sub = await Subscription.findOne({ userId: req.user._id });
-        
+
         if (!sub) {
-            return res.status(404).json({
+            return res.status(200).json({
                 success: false,
+                data: null,
                 message: "No active subscription found."
             });
         }

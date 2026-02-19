@@ -3,7 +3,7 @@ import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
 import API_URL from './config/api';
 
 // Page Imports
-import Login from './pages/login'; 
+import Login from './pages/login';
 import Register from './pages/register';
 import SellerDashboard from './pages/SellerDashboard';
 import BuyerDashboard from './pages/BuyerDashboard';
@@ -15,7 +15,7 @@ import Reviews from './pages/Reviews';
 // 1. Smart Navigation Component
 const Navbar = ({ lang, toggleLang, userRole, handleLogout }) => {
   const location = useLocation();
-  
+
   const handleHomeClick = (e) => {
     if (location.pathname === "/") {
       e.preventDefault();
@@ -30,7 +30,7 @@ const Navbar = ({ lang, toggleLang, userRole, handleLogout }) => {
           <span className="bg-sky-500 text-white p-2 rounded-xl text-xl">🥛</span>
           Milk<span className="text-sky-500">Hub</span>
         </Link>
-        
+
         <div className="hidden md:flex items-center gap-8 font-bold text-slate-600">
           <NavLink to="/" onClick={handleHomeClick} className={({ isActive }) => isActive ? "text-sky-500" : "hover:text-sky-500 transition-colors"}>
             {lang === 'en' ? 'Home' : 'होम'}
@@ -38,7 +38,7 @@ const Navbar = ({ lang, toggleLang, userRole, handleLogout }) => {
           <a href="#products" className="hover:text-sky-500 transition-colors">{lang === 'en' ? 'Products' : 'उत्पाद'}</a>
           <a href="#reviews" className="hover:text-sky-500 transition-colors">{lang === 'en' ? 'Reviews' : 'रिव्यु'}</a>
           <a href="#contact" className="hover:text-sky-500 transition-colors">{lang === 'en' ? 'Contact' : 'संपर्क'}</a>
-          
+
           {userRole && (
             <NavLink to={userRole === 'seller' ? "/dashboard" : "/my-orders"} className="text-sky-600">
               {lang === 'en' ? 'Dashboard' : 'डैशबोर्ड'}
@@ -73,8 +73,8 @@ const Navbar = ({ lang, toggleLang, userRole, handleLogout }) => {
 
 // 2. The Merged Home Component
 const Home = ({ lang, userRole }) => {
-  const [category, setCategory] = useState('milk'); 
-  const [product, setProduct] = useState('cow'); 
+  const [category, setCategory] = useState('milk');
+  const [product, setProduct] = useState('cow');
   const [price, setPrice] = useState(40);
   const [qty, setQty] = useState(1);
 
@@ -120,9 +120,9 @@ const Home = ({ lang, userRole }) => {
       // Corrected Fetch: Pointing to subscription route, not login
       const response = await fetch(`${API_URL}/api/subscription/set-daily`, {
         method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
           userId: localStorage.getItem('userId'),
@@ -152,8 +152,8 @@ const Home = ({ lang, userRole }) => {
           <div className="max-w-7xl mx-auto px-6 py-16 text-left w-full">
             <h2 className="text-4xl font-black mb-10 text-slate-900">{t.buyerTitle}</h2>
             <div className="flex gap-4 mb-8">
-               <button onClick={() => {setCategory('milk'); handleProductChange('cow');}} className={`px-8 py-3 rounded-2xl font-black ${category === 'milk' ? 'bg-sky-500 text-white' : 'bg-slate-100'}`}>{t.catMilk}</button>
-               <button onClick={() => {setCategory('dairy'); handleProductChange('paneer');}} className={`px-8 py-3 rounded-2xl font-black ${category === 'dairy' ? 'bg-sky-500 text-white' : 'bg-slate-100'}`}>{t.catDairy}</button>
+              <button onClick={() => { setCategory('milk'); handleProductChange('cow'); }} className={`px-8 py-3 rounded-2xl font-black ${category === 'milk' ? 'bg-sky-500 text-white' : 'bg-slate-100'}`}>{t.catMilk}</button>
+              <button onClick={() => { setCategory('dairy'); handleProductChange('paneer'); }} className={`px-8 py-3 rounded-2xl font-black ${category === 'dairy' ? 'bg-sky-500 text-white' : 'bg-slate-100'}`}>{t.catDairy}</button>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-100">
@@ -212,7 +212,7 @@ const Home = ({ lang, userRole }) => {
 // 3. Main App Hub
 export default function App() {
   const [lang, setLang] = useState('en');
-  
+
   // Persistence Initialization
   const [userRole, setUserRole] = useState(() => {
     return localStorage.getItem('userRole') || null;
@@ -246,7 +246,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home lang={lang} userRole={userRole} />} />
           <Route path="/login" element={<Login lang={lang} handleLoginSuccess={handleLoginSuccess} />} />
-          <Route path="/register" element={<Register lang={lang} />} />
+          <Route path="/register" element={<Register lang={lang} handleLoginSuccess={handleLoginSuccess} />} />
           <Route path="/dashboard" element={<SellerDashboard lang={lang} />} />
           <Route path="/my-orders" element={<BuyerDashboard lang={lang} />} />
         </Routes>

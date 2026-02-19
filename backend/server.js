@@ -13,27 +13,33 @@ connectDB();
 const app = express();
 
 // 3. Middleware
-// CORS: Dynamically allow the frontend URL from env + localhost for dev
+// CORS: Updated with your specific MilkHub URLs
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     "http://localhost:5173",
-    "https://milkhub-rho.vercel.app"
+    "https://milkhub-rho.vercel.app",
+    "https://milk-hub-one.vercel.app" // Adding the one from your link
 ].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, curl, etc.)
+        // Allow requests with no origin (like mobile apps or Postman)
         if (!origin) return callback(null, true);
-        // Allow any *.vercel.app subdomain
+        
+        // Match any Vercel deployment URL
         if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+        
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
+        } else {
+            console.log("CORS Blocked Origin:", origin); // Helpful for debugging
+            return callback(new Error('Not allowed by CORS'));
         }
-        return callback(new Error('Not allowed by CORS'));
     },
     credentials: true
 }));
-app.use(express.json()); // Essential to read req.body data
+
+app.use(express.json()); 
 
 // 4. API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -46,9 +52,7 @@ app.use('/api/bills', require('./routes/billRoutes'));
  */
 app.get('/api/users/buyers', async (req, res) => {
     try {
-        console.log("Fetching buyers for Mahavir Dhud...");
         const buyers = await User.find({ role: 'buyer' }).select('-password');
-        console.log(`Found ${buyers.length} buyers in Mandsaur.`);
         res.status(200).json(buyers);
     } catch (error) {
         res.status(500).json({ message: "Error fetching buyers", error: error.message });
@@ -69,17 +73,15 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 8. Start the Server (only when NOT on Vercel)
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-        console.log(`
-        🚀 Server running on port ${PORT}
-        📍 Environment: ${process.env.NODE_ENV || 'development'}
-        🥛 MilkHub API Ready
-        `);
-    });
-}
+// 8. Start the Server
+// For Render, we want it to listen on the assigned PORT immediately.
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`
+    🚀 Server running on port ${PORT}
+    📍 Environment: ${process.env.NODE_ENV || 'development'}
+    🥛 MilkHub API Ready
+    `);
+});
 
-// 9. Export app for Vercel serverless
 module.exports = app;
